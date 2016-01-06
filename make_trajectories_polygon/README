@@ -1,0 +1,12 @@
+How to compile:
+ant clean compile jar
+
+Look at the build.xml file to see how to include the different jar files.
+
+How to run:
+hadoop jar dist/maketrajectories.jar classes/runhadoop/TwitterTrajectories.class NY_polygon_Oct_iso.txt NY_Traj_Oct_iso.txt
+
+
+Potential changes: Look at the time to see if we have to break them based on the week. The time is based on unix timestamp.
+
+

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<project name="maketrajectories" default="main" basedir="."> 
+
+    <!-- Sets variables which can later be used. -->
+    <!-- The value of a property is accessed via ${} -->
+    <property name="src.dir" location="src" />
+    <property name="classes.dir" location="classes" />  
+    <property name="dist.dir" location="dist" />   
+    <property name="dist.jarfile" value="maketrajectories.jar" />  
+    <property name="lib.dir1"  location="/usr/hdp/2.2.0.0-2041/hadoop"/>
+    <property name="lib.dir2"  location="/usr/hdp/2.2.0.0-2041/hadoop-hdfs"/>
+    <property name="lib.dir3"  location="/usr/hdp/2.2.0.0-2041/hadoop-mapreduce"/>
+    <property name="lib.dir4"  location="/usr/hdp/2.2.0.0-2041/hadoop-yarn"/>
+    <property name="my.lib" location="lib"/>
+
+    <path id="mylibs">
+	<fileset dir="${lib.dir1}">
+	     <include name="lib/**/**.jar"/>
+	     <include name="**/**.jar"/>
+	</fileset>
+	<fileset dir="${lib.dir2}">
+	     <include name="lib/**/**.jar"/>
+	     <include name="**/**.jar"/>
+	</fileset>
+	<fileset dir="${lib.dir3}">
+	     <include name="lib/**/**.jar"/>
+	     <include name="**/**.jar"/>
+	</fileset>
+	<fileset dir="${lib.dir4}">
+	     <include name="lib/**/**.jar"/>
+	     <include name="**/**.jar"/>
+	</fileset>
+	<fileset dir="${my.lib}">
+		<include name="**/**.jar"/>
+	</fileset>
+    </path>
+
+    <!-- Deletes the existing classes and dist directory-->
+    <target name="clean" description="Clean up output directories.">   
+        <delete dir="${classes.dir}" />   
+        <!--<delete file="${dist.jarfile}" />
+        <delete dir="${dist.dir}" />-->
+    </target>   
+
+    <!-- Creates the classes and dist directory-->
+    <target name="makedir">
+        <mkdir dir="${classes.dir}" />
+        <mkdir dir="${dist.dir}" />
+    </target>
+
+    <!-- Compiles the java code (including the usage of library for JUnit -->
+    <target name="compile" depends="clean, makedir" description="Compile all sources.">  
+	<property name="myclasspath" refid="mylibs"/>
+	<echo message="Classpath = ${myclasspath}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="mylibs" debug="on"/> 
+    </target> 
+
+    <!--Creates the deployable jar file  -->
+    <target name="jar" depends="compile" description="Creates the binary distribution.">   
+        <jar basedir="${classes.dir}" destfile="${dist.dir}/${dist.jarfile}" >
+	<zipgroupfileset dir="${my.lib}" includes="**/*.jar"/>  
+            <manifest>
+                <attribute name="Main-Class" value="runhadoop.TwitterTrajectories" />
+            </manifest>
+        </jar>
+    </target>   
+
+    <target name="main" depends="compile, jar">
+        <description>Main target</description>
+    </target>
+
+</project>
